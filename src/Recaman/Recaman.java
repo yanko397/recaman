@@ -22,13 +22,50 @@ public class Recaman {
 	private int complete = 0;
 
 	public void calcSteps(int maxSteps) {
+
+		sequence = new ArrayList<Integer>();
+		sortedSeq = new ArrayList<Integer>();
+		unsortedSeq = new ArrayList<Integer>();
 		complete = 0;
+
+		int fast = maxSteps - maxSteps % 1000;
+		int slow = maxSteps % 1000;
+		
 		int current = 0;
-		for (int i = 0; i < maxSteps; i++)
-			if (!sequence.contains(current - i) && current - i > 0)
+		for (int i = 0; i < fast; i++) {
+			if (!unsortedSeq.contains(current - i) && !contains(sortedSeq, current - i) && current - i > 0) {
+				unsortedSeq.add(current -= i);
+			} else {
+				unsortedSeq.add(current += i);
+			}
+			
+			if(unsortedSeq.size() % 1000 == 0) {
+				// check for the completed part of the list
+				for (int j = complete; j < sequence.size(); j++) {
+					if (!sequence.contains(j)) {
+						complete = j - 1;
+						break;
+					}
+				}
+				sequence.addAll(unsortedSeq);
+				sortedSeq.addAll(unsortedSeq);
+				Collections.sort(sortedSeq);
+				unsortedSeq = new ArrayList<Integer>();
+			}
+		}
+		for (int i = 0; i < slow; i++) {
+			if (!sequence.contains(current - i) && current - i > 0) {
 				sequence.add(current -= i);
-			else
+			} else {
 				sequence.add(current += i);
+			}
+		}
+		for (int j = complete; j < sequence.size(); j++) {
+			if (!sequence.contains(j)) {
+				complete = j - 1;
+				break;
+			}
+		}
 	}
 
 	public void calcComplete(int minComplete) {
@@ -36,12 +73,18 @@ public class Recaman {
 	}
 	
 	public void calcComplete(int minComplete, boolean print) {
+		
+		sequence = new ArrayList<Integer>();
+		sortedSeq = new ArrayList<Integer>();
+		unsortedSeq = new ArrayList<Integer>();
+		complete = 0;
+		
 		int current = 0;
 		int count = 0;
 		long lastTime = System.currentTimeMillis();
 		
 		while (complete < minComplete) {
-			if ((!unsortedSeq.contains(current - count) && !contains(sortedSeq, current - count)) && current - count > 0) {
+			if (!unsortedSeq.contains(current - count) && !contains(sortedSeq, current - count) && current - count > 0) {
 				unsortedSeq.add(current -= count);
 			} else {
 				unsortedSeq.add(current += count);
@@ -176,5 +219,13 @@ public class Recaman {
 
 	public ArrayList<Integer> getSequence() {
 		return sequence;
+	}
+	
+	public int getComplete() {
+		return complete;
+	}
+	
+	public int getSteps() {
+		return sequence.size();
 	}
 }
