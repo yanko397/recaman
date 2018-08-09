@@ -213,11 +213,12 @@ public class Recaman {
 				cg.setColor(Color.BLACK);
 			}
 			cg.setStroke(new BasicStroke(lineWidth));
-			cg.drawArc(arc[0]-1, arc[1], arc[2], arc[3], arc[4], arc[5]);
+			if(lineWidth != 0) cg.drawArc(arc[0]-1, arc[1], arc[2], arc[3], arc[4], arc[5]);
 		}
 		
 		try {
 			ImageIO.write(bi, "png", new File(width + "x" + height + " scale " + scale + ".png"));
+			bi.flush();
 			System.out.println("Done! :)");
 		} catch (IOException e) {
 			e.printStackTrace();

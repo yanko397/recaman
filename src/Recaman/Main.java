@@ -85,13 +85,6 @@ public class Main extends Application {
 		
 		Button renderButton = new Button("Render");
 		renderButton.setPrefWidth(100);
-		Label renderLabel1 = new Label("    Filename:    ");
-		renderLabel1.setFont(new Font(16));
-		TextField renderField = new TextField("img");
-		renderField.setPrefWidth(130);
-		Label renderLabel2 = new Label(".png");
-		renderLabel2.setFont(new Font(16));
-		HBox renderBox = new HBox(renderButton, renderLabel1, renderField, renderLabel2);
 		
 		
 		// Main Box
@@ -108,7 +101,7 @@ public class Main extends Application {
 				xBox,
 				ratioBox,
 				coloredBox,
-				renderBox
+				renderButton
 		);
 
 		// force the field to be numeric only
