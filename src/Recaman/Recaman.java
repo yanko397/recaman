@@ -21,15 +21,15 @@ public class Recaman {
 	private ArrayList<Integer> unsortedSeq = new ArrayList<Integer>();
 	private int complete = 0;
 
-	public void calcSteps(int maxSteps) {
+	public void calcSteps(int steps) {
 
 		sequence = new ArrayList<Integer>();
 		sortedSeq = new ArrayList<Integer>();
 		unsortedSeq = new ArrayList<Integer>();
 		complete = 0;
 
-		int fast = maxSteps - maxSteps % 1000;
-		int slow = maxSteps % 1000;
+		int fast = steps - steps % 1000;
+		int slow = steps % 1000;
 		
 		int current = 0;
 		for (int i = 0; i < fast; i++) {
@@ -136,25 +136,30 @@ public class Recaman {
 		}
 	}
 
-	private final int DEFAULT_X = 0;
-	private final int DEFAULT_RATIO_X = 16;
-	private final int DEFAULT_RATIO_Y = 9;
-	private final int DEFAULT_SCALE = 2;
+	public final int DEFAULT_X = 1920;
+	public final int DEFAULT_RATIO_X = 16;
+	public final int DEFAULT_RATIO_Y = 9;
+	public final int DEFAULT_SCALE = 2;
+	public final int DEFAULT_LINE_WIDTH = 1;
+	public final boolean DEFAULT_COLORED = false;
 	
 	public void toImage() {
-		toImage(DEFAULT_X, DEFAULT_RATIO_X, DEFAULT_RATIO_Y, DEFAULT_SCALE);
+		toImage(DEFAULT_X, DEFAULT_RATIO_X, DEFAULT_RATIO_Y, DEFAULT_SCALE, DEFAULT_COLORED, DEFAULT_LINE_WIDTH);
 	}
 	public void toImage(int scale) {
-		toImage(DEFAULT_X, DEFAULT_RATIO_X, DEFAULT_RATIO_Y, scale);
+		toImage(DEFAULT_X, DEFAULT_RATIO_X, DEFAULT_RATIO_Y, scale, DEFAULT_COLORED, DEFAULT_LINE_WIDTH);
 	}
 	public void toImage(int x, int scale) {
-		toImage(x, DEFAULT_RATIO_X, DEFAULT_RATIO_Y, scale);
+		toImage(x, DEFAULT_RATIO_X, DEFAULT_RATIO_Y, scale, DEFAULT_COLORED, DEFAULT_LINE_WIDTH);
 	}
 	public void toImage(int ratioX, int ratioY, int scale) {
-		toImage(DEFAULT_X, ratioX, ratioY, scale);
+		toImage(DEFAULT_X, ratioX, ratioY, scale, DEFAULT_COLORED, DEFAULT_LINE_WIDTH);
+	}
+	public void toImage(int x, int ratioX, int ratioY, int scale) {
+		toImage(x, ratioX, ratioY, scale, DEFAULT_COLORED, DEFAULT_LINE_WIDTH);
 	}
 	
-	public void toImage(int x, int ratioX, int ratioY, int scale) {
+	public void toImage(int x, int ratioX, int ratioY, int scale, boolean colored, int lineWidth) {
 		if(sequence == null || sequence.size() == 0) return;
 		int width = (x != 0 ? x / scale : (complete != 0 ? complete : sequence.size())) * scale;
 		int height = width / ratioX * ratioY;
@@ -179,33 +184,35 @@ public class Recaman {
 		System.out.println("Arcs to draw: " + toDraw.size());
 		int count = 0;
 		for(int[] arc : toDraw) {
-			switch(count % 7) {
-			case 0:
-				cg.setColor(Color.CYAN);
-				break;
-			case 1:
-				cg.setColor(Color.BLUE);
-				break;
-			case 2:
-				cg.setColor(Color.GREEN);
-				break;
-			case 3:
-				cg.setColor(Color.YELLOW);
-				break;
-			case 4:
-				cg.setColor(Color.RED);
-				break;
-			case 5:
-				cg.setColor(Color.MAGENTA);
-				break;
-			case 6:
-				cg.setColor(Color.ORANGE);
-				break;
+			if(colored) {
+				switch(count % 7) {
+				case 0:
+					cg.setColor(Color.CYAN);
+					break;
+				case 1:
+					cg.setColor(Color.BLUE);
+					break;
+				case 2:
+					cg.setColor(Color.GREEN);
+					break;
+				case 3:
+					cg.setColor(Color.YELLOW);
+					break;
+				case 4:
+					cg.setColor(Color.RED);
+					break;
+				case 5:
+					cg.setColor(Color.MAGENTA);
+					break;
+				case 6:
+					cg.setColor(Color.ORANGE);
+					break;
+				}
+				count++;
+				cg.fillArc(arc[0], arc[1], arc[2], arc[3], arc[4], arc[5]);
+				cg.setColor(Color.BLACK);
 			}
-			count++;
-			cg.fillArc(arc[0], arc[1], arc[2], arc[3], arc[4], arc[5]);
-			cg.setColor(Color.BLACK);
-			cg.setStroke(new BasicStroke(4));
+			cg.setStroke(new BasicStroke(lineWidth));
 			cg.drawArc(arc[0]-1, arc[1], arc[2], arc[3], arc[4], arc[5]);
 		}
 		
